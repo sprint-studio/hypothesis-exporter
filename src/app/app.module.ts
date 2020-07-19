@@ -14,12 +14,14 @@ import { environment } from '../environments/environment';
 import { EffectsModule } from '@ngrx/effects';
 import { TokenEffects, AnnotationEffects } from './store/effects';
 import { AnnotationComponent } from './components/annotation/annotation.component';
+import { PaginationComponent } from './components/pagination/pagination/pagination.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
-    AnnotationComponent
+    AnnotationComponent,
+    PaginationComponent
   ],
   imports: [
     CommonModule,
