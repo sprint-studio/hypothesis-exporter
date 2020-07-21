@@ -1,4 +1,11 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  AfterViewInit,
+  OnChanges,
+  SimpleChanges,
+} from "@angular/core";
 import { Store, select } from "@ngrx/store";
 import { Observable } from "rxjs";
 
@@ -45,6 +52,8 @@ import { Annotation } from "src/app/core/models/annotation";
         *ngFor="let annotation of annotations$ | async"
         [annotation]="annotation"
         (annotate)="annotate($event)"
+        (add-tag)="addTag($event)"
+        (remove-tag)="removeTag($event)"
       ></annotation>
     </div>
   `,
@@ -71,5 +80,13 @@ export class HomeComponent implements OnInit {
 
   annotate($event: { id: string; text: string }) {
     this.store.dispatch(AnnotationActions.updateAnnotation({ data: $event }));
+  }
+
+  addTag(tag: string) {
+    // TODO Dispatch dell'azione per aggiungere il tag
+  }
+
+  removeTag(tag: string) {
+    // TODO Dispatch dell'azione per rimuovere il tag
   }
 }

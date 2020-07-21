@@ -24,6 +24,7 @@ import { Annotation } from "src/app/core/models/annotation";
                 ></path>
               </svg>
             </a>
+
             <a href="{{ annotation.links.incontext }}" target="_blank">
               <svg
                 class="w-4 h-4 text-gray-600"
@@ -36,6 +37,21 @@ import { Annotation } from "src/app/core/models/annotation";
               >
                 <path
                   d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                ></path>
+              </svg>
+            </a>
+            <a (click)="download()">
+              <svg
+                class="w-4 h-4 text-gray-600"
+                fill="none"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
                 ></path>
               </svg>
             </a>
@@ -66,6 +82,40 @@ import { Annotation } from "src/app/core/models/annotation";
             required=""
             ngModel
           ></textarea>
+          <div class="flex items-center">
+            <div
+              class=" w-2/4 h-10 flex justify-between bg-white border rounded"
+            >
+              <button
+                *ngFor="let tag of tags"
+                class="ml-1 my-1 px-2 inline-flex justify-center items-center space-x-1 rounded bg-gray-300 text-gray-700 text-sm"
+              >
+                <svg
+                  class="w-3 h-3 text-gray-600"
+                  fill="none"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+                <span>{{ tag }}</span>
+              </button>
+              <input
+                name="tag"
+                class="px-2 py-1 inline-flex flex-grow text-sm border-0 rounded focus:outline-none"
+                ngModel
+              />
+              <a
+                class="px-2 py-1 inline-flex justify-center items-center space-x-1 rounded-tr rounded-br border-l bg-white text-gray-800 text-xs focus:outline-none"
+                (click)="selectTag(annotationForm.value.tag)"
+              >
+                Add tags
+              </a>
+            </div>
+          </div>
           <div class="mt-2 flex justify-end">
             <button
               type="submit"
@@ -104,15 +154,32 @@ export class AnnotationComponent implements OnInit {
     id: string;
     text: string;
   }> = new EventEmitter();
+  @Output() addTag: EventEmitter<string> = new EventEmitter();
+  @Output() removeTag: EventEmitter<string> = new EventEmitter();
 
   private edit: boolean;
+  private tags: string[];
 
   constructor() {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.tags = [];
+  }
 
   saveAnnotation(data: { text: string }) {
     this.edit = false;
     this.annotate.emit({ id: this.annotation.id, ...data });
+  }
+
+  download() {}
+
+  selectTag(tag: string) {
+    this.tags.push(tag);
+    this.addTag.emit(tag);
+  }
+
+  deleteTag(tag: string) {
+    this.tags = this.tags.filter((_tag) => _tag !== tag);
+    this.removeTag.emit(tag);
   }
 }

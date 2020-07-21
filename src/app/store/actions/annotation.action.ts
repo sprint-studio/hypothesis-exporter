@@ -25,11 +25,11 @@ export const AnnotationActions = {
   // TODO Valutare se aggiornare ad Annotation la props di questa action
   updateAnnotation: createAction(
     "[Home Component] Update annotation",
-    props<{ data: { id: string; text: string } }>()
+    props<{ data: { id: string; text: string; tags?: string[] } }>()
   ),
 
   updateAnnotationSuccess: createAction(
     "[Annotation Effects] Update Annotation Success",
-    props<{ data: { id: string; text: string } }>()
+    props<{ data: { id: string; text: string; tags?: string[] } }>()
   ),
 };
