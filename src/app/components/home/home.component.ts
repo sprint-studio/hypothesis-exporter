@@ -78,7 +78,7 @@ export class HomeComponent implements OnInit {
     this.store.dispatch(setAPIToken({ token }));
   }
 
-  annotate($event: { id: string; text: string }) {
+  annotate($event: { id: string; text: string; tags?: string[] }) {
     this.store.dispatch(AnnotationActions.updateAnnotation({ data: $event }));
   }
 

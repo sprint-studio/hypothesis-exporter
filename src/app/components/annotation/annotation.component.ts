@@ -1,5 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
 import { Annotation } from "src/app/core/models/annotation";
+import { Store, select } from "@ngrx/store";
+import { AppState } from "src/app/store";
 
 @Component({
   selector: "annotation",
@@ -9,7 +11,7 @@ import { Annotation } from "src/app/core/models/annotation";
         <div class="flex justify-between">
           <label class="text-xs text-gray-600">{{ annotation.uri }}</label>
           <div class="flex space-x-3">
-            <a (click)="edit = !edit">
+            <a (click)="onEdit()">
               <svg
                 class="w-4 h-4 text-gray-600"
                 fill="none"
@@ -152,21 +154,35 @@ export class AnnotationComponent implements OnInit {
   @Input() annotation: Annotation;
   @Output() annotate: EventEmitter<{
     id: string;
-    text: string;
+    text?: string;
+    tags?: string[];
   }> = new EventEmitter();
-  @Output() addTag: EventEmitter<string> = new EventEmitter();
-  @Output() removeTag: EventEmitter<string> = new EventEmitter();
+  @Output() editAnnotation: EventEmitter<string> = new EventEmitter();
+  @Output() addTag: EventEmitter<{
+    id: string;
+    tag: string;
+  }> = new EventEmitter();
+  @Output() removeTag: EventEmitter<{
+    id: string;
+    tag: string;
+  }> = new EventEmitter();
 
   private edit: boolean;
   private tags: string[];
 
-  constructor() {}
+  constructor(private store: Store<AppState>) {}
 
   ngOnInit() {
     this.tags = [];
+    //this.store.pipe(select())
   }
 
-  saveAnnotation(data: { text: string }) {
+  onEdit() {
+    this.edit = true;
+    this.editAnnotation.emit(this.annotation.id);
+  }
+
+  saveAnnotation(data: { text?: string; tags?: string[] }) {
     this.edit = false;
     this.annotate.emit({ id: this.annotation.id, ...data });
   }
@@ -175,11 +191,11 @@ export class AnnotationComponent implements OnInit {
 
   selectTag(tag: string) {
     this.tags.push(tag);
-    this.addTag.emit(tag);
+    this.addTag.emit({ id: this.annotation.id, tag });
   }
 
   deleteTag(tag: string) {
     this.tags = this.tags.filter((_tag) => _tag !== tag);
-    this.removeTag.emit(tag);
+    this.removeTag.emit({ id: this.annotation.id, tag });
   }
 }
